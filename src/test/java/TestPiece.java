@@ -27,4 +27,10 @@ public class TestPiece {
         assert Pieces.WhiteBishop().getValue() == 3;
         assert Pieces.BlackQueen().getValue() == 9;
     }
+
+    @Test
+    void testToString() {
+        assert Pieces.BlackQueen().toString().equals("q");
+        assert Pieces.NoPiece().toString().equals(" ");
+    }
 }

@@ -1,5 +1,7 @@
 package com.chess;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -31,6 +33,7 @@ public class Board {
     public static boolean validIndices(int i, int j) {
         return 0 <= i && i < 8 && 0 <= j && j < 8;
     }
+    @NotNull
     public Piece getPiece(int i, int j) {
         if (validIndices(i, j)) {
             return pieceArray[i][j];
@@ -65,5 +68,32 @@ public class Board {
                 Arrays.asList( Pieces.WhitePawn(), Pieces.WhitePawn(), Pieces.WhitePawn(), Pieces.WhitePawn(), Pieces.WhitePawn(), Pieces.WhitePawn(), Pieces.WhitePawn(), Pieces.WhitePawn() ),
                 Arrays.asList( Pieces.WhiteRook(), Pieces.WhiteKnight(), Pieces.WhiteBishop(), Pieces.WhiteQueen(), Pieces.WhiteKing(), Pieces.WhiteBishop(), Pieces.WhiteKnight(), Pieces.WhiteRook() )
         ));
+    }
+    @Override
+    public String toString() {
+        StringBuilder boardString = new StringBuilder();
+        int noPieceCounter = 0;
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                Piece currPiece = getPiece(i, j);
+                if (currPiece.equals(Pieces.NoPiece())) {
+                    noPieceCounter += 1;
+                } else {
+                    if (noPieceCounter > 0) {
+                        boardString.append(noPieceCounter);
+                    }
+                    noPieceCounter = 0;
+                    boardString.append(currPiece.toString());
+                }
+            }
+            if (noPieceCounter > 0) {
+                boardString.append(noPieceCounter);
+            }
+            noPieceCounter = 0;
+            if (i != 7) {
+                boardString.append("/");
+            }
+        }
+        return boardString.toString();
     }
 }

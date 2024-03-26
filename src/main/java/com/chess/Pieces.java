@@ -52,8 +52,8 @@ public abstract class Pieces {
     public static Piece WhiteQueen() {
         return new Piece(PieceColor.White, PieceType.Queen);
     }
-    @Nullable
+    @NotNull
     public static Piece NoPiece() {
-        return null;
+        return new Piece(PieceColor.NoColor, PieceType.NoType);
     }
 }

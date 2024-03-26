@@ -31,7 +31,44 @@ public class Piece {
             case Rook -> 5;
             case Knight, Bishop -> 3;
             case Queen -> 9;
-            case King -> 0;
+            default -> 0;
+        };
+    }
+
+    @Override
+    public String toString() {
+        return switch (type) {
+            case Pawn -> switch (color) {
+                case Black -> "p";
+                case White -> "P";
+                default -> " ";
+            };
+            case Rook -> switch (color) {
+                case Black -> "r";
+                case White -> "R";
+                default -> " ";
+            };
+            case Knight -> switch (color) {
+                case Black -> "n";
+                case White -> "N";
+                default -> " ";
+            };
+            case Bishop -> switch (color) {
+                case Black -> "b";
+                case White -> "B";
+                default -> " ";
+            };
+            case Queen -> switch (color) {
+                case Black -> "q";
+                case White -> "Q";
+                default -> " ";
+            };
+            case King -> switch (color) {
+                case Black -> "k";
+                case White -> "K";
+                default -> " ";
+            };
+            default -> " ";
         };
     }
 }
