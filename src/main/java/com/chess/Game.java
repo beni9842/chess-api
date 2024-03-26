@@ -53,6 +53,6 @@ public class Game implements GameInterface {
     }
     @Override
     public String postMove(String moveString) { // moveString in Universal Chess Interface
-
+        return "";
     }
 }
