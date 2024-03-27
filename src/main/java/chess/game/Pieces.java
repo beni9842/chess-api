@@ -1,7 +1,6 @@
-package com.chess;
+package chess.game;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public abstract class Pieces {
     @NotNull

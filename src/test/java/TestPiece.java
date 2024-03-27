@@ -1,7 +1,7 @@
-import com.chess.Piece;
-import com.chess.PieceColor;
-import com.chess.PieceType;
-import com.chess.Pieces;
+import chess.game.Piece;
+import chess.game.PieceColor;
+import chess.game.PieceType;
+import chess.game.Pieces;
 import org.junit.jupiter.api.Test;
 
 import java.util.Objects;

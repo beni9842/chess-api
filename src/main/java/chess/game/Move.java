@@ -1,0 +1,28 @@
+package chess.game;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class Move {
+    private final List<Integer> moveVector;
+    public Move (String uciString) {
+        if (uciString.length() == 4) {
+            moveVector = new ArrayList<>(Arrays.asList(
+                    Board.FileInt(uciString.charAt(0)),
+                    Board.RankInt(uciString.charAt(1)),
+                    Board.FileInt(uciString.charAt(2)),
+                    Board.RankInt(uciString.charAt(3))
+            ));
+        } else {
+            throw new RuntimeException("Cannot generate move from uciString");
+        }
+    }
+    public void execute(Board target) {
+        Piece p = target.removePiece(moveVector.get(1), moveVector.get(0));
+        target.setPiece(p, moveVector.get(3), moveVector.get(2));
+    }
+    public List<Integer> getMoveVector() {
+        return moveVector;
+    }
+}

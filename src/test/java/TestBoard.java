@@ -1,6 +1,6 @@
-import com.chess.Board;
-import com.chess.Piece;
-import com.chess.Pieces;
+import chess.game.Board;
+import chess.game.Piece;
+import chess.game.Pieces;
 import org.junit.jupiter.api.Test;
 
 public class TestBoard {
@@ -31,5 +31,16 @@ public class TestBoard {
     void testToString() {
         Board b = Board.NewBoard();
         assert b.toString().equals("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
+    }
+    @Test
+    void testFileInt() {
+        assert Board.FileInt('a') == 0;
+        assert Board.FileInt('h') == 7;
+    }
+
+    @Test
+    void testRankInt() {
+        assert Board.RankInt('1') == 7;
+        assert Board.RankInt('8') == 0;
     }
 }

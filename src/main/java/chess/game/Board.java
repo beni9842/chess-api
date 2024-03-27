@@ -1,4 +1,4 @@
-package com.chess;
+package chess.game;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -39,6 +39,20 @@ public class Board {
             return pieceArray[i][j];
         } else {
             throw new RuntimeException("Invalid indices provided to method getPiece");
+        }
+    }
+    public static int RankInt(char rankChar) {
+        if ('1' <= rankChar && rankChar <= '8') {
+            return 8 - (rankChar - '0');
+        } else {
+            return -1;
+        }
+    }
+    public static int FileInt(char fileChar) {
+        if ('a' <= fileChar && fileChar <= 'h') {
+            return fileChar - 'a';
+        } else {
+            return -1;
         }
     }
     public Piece removePiece(int i, int j) {
