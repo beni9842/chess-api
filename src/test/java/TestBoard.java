@@ -3,6 +3,8 @@ import chess.game.Piece;
 import chess.game.Pieces;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class TestBoard {
     @Test
     void testNewBoard() {
@@ -32,6 +34,7 @@ public class TestBoard {
         Board b = Board.NewBoard();
         assert b.toString().equals("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
     }
+
     @Test
     void testFileInt() {
         assert Board.FileInt('a') == 0;
@@ -42,5 +45,21 @@ public class TestBoard {
     void testRankInt() {
         assert Board.RankInt('1') == 7;
         assert Board.RankInt('8') == 0;
+    }
+
+    @Test
+    void testPrivateConstructor() {
+        assertThrows(IllegalAccessException.class, Board.class::newInstance);
+    }
+
+
+    @Test
+    void testValidIndices() {
+        assertTrue(Board.validIndices(0, 0));
+        assertTrue(Board.validIndices(7, 7));
+        assertFalse(Board.validIndices(-1, 0));
+        assertFalse(Board.validIndices(8, 0));
+        assertFalse(Board.validIndices(0, -1));
+        assertFalse(Board.validIndices(0, 8));
     }
 }
