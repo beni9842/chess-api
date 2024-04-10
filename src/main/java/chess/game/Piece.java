@@ -15,6 +15,9 @@ public class Piece {
     public PieceType getType() {
         return type;
     }
+    public Piece copy() {
+        return new Piece(color, type);
+    }
 
     @Override
     public boolean equals(Object obj) {

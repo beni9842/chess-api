@@ -2,6 +2,7 @@ package chess.game;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -55,6 +56,20 @@ public class Board {
             return -1;
         }
     }
+    public static String RankStr(int rankInt) {
+        if (0 <= rankInt && rankInt < 8) {
+            return "" + (char) ('8' - rankInt);
+        } else {
+            return "";
+        }
+    }
+    public static String FileStr(int fileInt) {
+        if (0 <= fileInt && fileInt < 8) {
+            return "" + (char) ('a' + fileInt);
+        } else {
+            return "";
+        }
+    }
     public Piece removePiece(int i, int j) {
         if (validIndices(i, j)) {
             Piece p = pieceArray[i][j];
@@ -70,6 +85,18 @@ public class Board {
         } else {
             throw new RuntimeException("Invalid indices provided to method setPiece");
         }
+    }
+    public static Board EmptyBoard() {
+        return new Board(Arrays.asList(
+                Arrays.asList( Pieces.NoPiece(), Pieces.NoPiece(), Pieces.NoPiece(), Pieces.NoPiece(), Pieces.NoPiece(), Pieces.NoPiece(), Pieces.NoPiece(), Pieces.NoPiece() ),
+                Arrays.asList( Pieces.NoPiece(), Pieces.NoPiece(), Pieces.NoPiece(), Pieces.NoPiece(), Pieces.NoPiece(), Pieces.NoPiece(), Pieces.NoPiece(), Pieces.NoPiece() ),
+                Arrays.asList( Pieces.NoPiece(), Pieces.NoPiece(), Pieces.NoPiece(), Pieces.NoPiece(), Pieces.NoPiece(), Pieces.NoPiece(), Pieces.NoPiece(), Pieces.NoPiece() ),
+                Arrays.asList( Pieces.NoPiece(), Pieces.NoPiece(), Pieces.NoPiece(), Pieces.NoPiece(), Pieces.NoPiece(), Pieces.NoPiece(), Pieces.NoPiece(), Pieces.NoPiece() ),
+                Arrays.asList( Pieces.NoPiece(), Pieces.NoPiece(), Pieces.NoPiece(), Pieces.NoPiece(), Pieces.NoPiece(), Pieces.NoPiece(), Pieces.NoPiece(), Pieces.NoPiece() ),
+                Arrays.asList( Pieces.NoPiece(), Pieces.NoPiece(), Pieces.NoPiece(), Pieces.NoPiece(), Pieces.NoPiece(), Pieces.NoPiece(), Pieces.NoPiece(), Pieces.NoPiece() ),
+                Arrays.asList( Pieces.NoPiece(), Pieces.NoPiece(), Pieces.NoPiece(), Pieces.NoPiece(), Pieces.NoPiece(), Pieces.NoPiece(), Pieces.NoPiece(), Pieces.NoPiece() ),
+                Arrays.asList( Pieces.NoPiece(), Pieces.NoPiece(), Pieces.NoPiece(), Pieces.NoPiece(), Pieces.NoPiece(), Pieces.NoPiece(), Pieces.NoPiece(), Pieces.NoPiece() )
+        ));
     }
     public static Board NewBoard() {
         return new Board(Arrays.asList(
@@ -109,5 +136,16 @@ public class Board {
             }
         }
         return boardString.toString();
+    }
+
+    public Board copy() {
+        List<List<Piece>> pieceList = new ArrayList<>(8);
+        for (int i = 0; i < 8; i++) {
+            pieceList.add(new ArrayList<>(8));
+            for (int j = 0; j < 8; j++) {
+                pieceList.get(i).add(pieceArray[i][j].copy());
+            }
+        }
+        return new Board(pieceList);
     }
 }

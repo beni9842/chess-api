@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Move {
     private final List<Integer> moveVector;
-    public Move (String uciString) {
+    public Move(String uciString) {
         if (uciString.length() == 4) {
             moveVector = new ArrayList<>(Arrays.asList(
                     Board.FileInt(uciString.charAt(0)),
@@ -21,6 +21,17 @@ public class Move {
     public void execute(Board target) {
         Piece p = target.removePiece(moveVector.get(1), moveVector.get(0));
         target.setPiece(p, moveVector.get(3), moveVector.get(2));
+    }
+    public String toUCI() {
+        return ( Board.FileStr(moveVector.get(0)) +
+                 Board.RankStr(moveVector.get(1)) +
+                 Board.FileStr(moveVector.get(2)) +
+                 Board.RankStr(moveVector.get(3))
+        );
+    }
+
+    public Piece capture(Board target) {
+        return target.getPiece(moveVector.get(3), moveVector.get(2)).copy();
     }
     public List<Integer> getMoveVector() {
         return moveVector;

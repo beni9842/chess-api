@@ -1,9 +1,7 @@
 package chess.game;
 
 import chess.api.GameID;
-import chess.api.GamePool;
 import chess.events.MovePieceEvent;
-import chess.observers.CheckObserver;
 import chess.events.Event;
 import chess.observers.Observer;
 
@@ -28,7 +26,6 @@ public class Game implements GameInterface {
 
     public static Game NewGame() {
         Game g = new Game(Board.NewBoard(), PieceColor.White, 0, 1);
-        g.attach(new CheckObserver());
         return g;
     }
     public String castleOptions() {
@@ -50,13 +47,19 @@ public class Game implements GameInterface {
             default -> "-";
         };
     }
-    @Override
+
     public void attach(Observer newObserver) {
+        /*
+        attaches a new Observer
+        */
         observers.add(newObserver);
     }
 
-    @Override
+
     public void broadcast(Event e) {
+        /*
+        Broadcasts an event to the observers that are attached to the Game
+        */
         for (Observer o : observers) {
             o.update(e);
         }
@@ -88,13 +91,18 @@ public class Game implements GameInterface {
     }
     @Override
     public String postMove(String moveString) { // moveString in Universal Chess Interface
-        Move move = new Move(moveString);
-        try {
-            move.execute(board);
-        } catch (Exception e) {
-            return "Move unsuccessful";
+        for (Move legalMove : LegalMoves.GetAll(board, turn)) {
+            if (legalMove.toUCI().equals(moveString)) {
+                try {
+                    legalMove.execute(board);
+                } catch (Exception e) {
+                    return "Move unsuccessful";
+                }
+                Board moveResult = board.copy();
+                broadcast(new MovePieceEvent(moveString, turn, moveResult));
+                return "Move successful";
+            }
         }
-        broadcast(new MovePieceEvent(moveString, turn));
-        return "Move successful";
+        return "Illegal move";
     }
 }
