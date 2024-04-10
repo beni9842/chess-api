@@ -17,4 +17,10 @@ public class TestMove {
         move.execute(b);
         assert b.toString().equals("rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR");
     }
+
+    @Test
+    public void testMoveToUCI() {
+        Move move = new Move("d2d4");
+        assert move.toUCI().equals("d2d4");
+    }
 }
