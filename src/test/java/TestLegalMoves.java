@@ -10,7 +10,7 @@ public class TestLegalMoves {
     @Test
     void testGetAll() {
         Board board = Board.NewBoard();
-        List<Move> allMoves = LegalMoves.GetAll(board, PieceColor.WHITE);
+        List<Move> allMoves = LegalMoves.GetAll(board, PieceColor.White);
         // Test something meaningful about the result, e.g., the number of moves
         assertEquals(20, allMoves.size());
     }
