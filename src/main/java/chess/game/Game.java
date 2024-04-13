@@ -1,7 +1,6 @@
 package chess.game;
 
 import chess.api.GameID;
-import chess.events.MovePieceEvent;
 import chess.events.Event;
 import chess.observers.Observer;
 
@@ -99,7 +98,7 @@ public class Game implements GameInterface {
                     return "Move unsuccessful";
                 }
                 Board moveResult = board.copy();
-                broadcast(new MovePieceEvent(moveString, turn, moveResult));
+                //broadcast(new MovePieceEvent(moveString, turn, moveResult));
                 return "Move successful";
             }
         }

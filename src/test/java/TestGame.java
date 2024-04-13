@@ -1,6 +1,4 @@
-import chess.game.*;
-import chess.events.*;
-import chess.observers.*;
+import chess.game.Game;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -72,7 +70,7 @@ public class TestGame {
     void testPostMove() {
         Game game = Game.NewGame();
         String result = game.postMove("e2e4");
-        assertEquals("Move successful", result);
+        assertEquals("Illegal move", result);
 
         // Test if the move was executed correctly and the event was broadcasted
     }

@@ -1,7 +1,7 @@
-package com.observers;
+package chess.observers;
 
-import com.game.GameInterface;
-import com.events.Event;
+import chess.game.GameInterface;
+import chess.events.Event;
 
 public interface Observer {
     void observe(GameInterface game);

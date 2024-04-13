@@ -11,7 +11,6 @@ public class TestLegalMoves {
     void testGetAll() {
         Board board = Board.NewBoard();
         List<Move> allMoves = LegalMoves.GetAll(board, PieceColor.White);
-        // Test something meaningful about the result, e.g., the number of moves
         assertEquals(20, allMoves.size());
     }
 
@@ -19,7 +18,6 @@ public class TestLegalMoves {
     void testGetMovesForPiece() {
         Board board = Board.NewBoard();
         List<Move> moves = LegalMoves.GetMovesForPiece(board, 1, 0);
-        // Test something meaningful about the result, e.g., the number of moves
         assertEquals(2, moves.size());
     }
 
