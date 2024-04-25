@@ -70,7 +70,7 @@ public class TestGame {
     void testPostMove() {
         Game game = Game.NewGame();
         String result = game.postMove("e2e4");
-        assertEquals("Illegal move", result);
+        assertEquals("Move successful", result);
 
         // Test if the move was executed correctly and the event was broadcasted
     }
