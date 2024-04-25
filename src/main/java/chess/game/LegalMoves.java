@@ -1,7 +1,6 @@
 package chess.game;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public abstract class LegalMoves {
@@ -135,10 +134,25 @@ public abstract class LegalMoves {
     }
 
     public static List<Move> GetKnightMoves(Board b, int rank, int file, PieceColor color) {
-        /*
-        TODO: implement
-         */
-        return new ArrayList<>();
+        Piece p = b.getPiece(rank, file);
+        List<Move> moves = new ArrayList<>();
+        if (p.getColor() == color) {
+            // Check all possible knight moves
+            int[] rankOffsets = {-2, -2, -1, -1, 1, 1, 2, 2};
+            int[] fileOffsets = {-1, 1, -2, 2, -2, 2, -1, 1};
+            // 8 possible moves at most
+            for (int i = 0; i < 8; i++) {
+                int dstRank = rank + rankOffsets[i];
+                int dstFile = file + fileOffsets[i];
+                if (dstRank >= 0 && dstRank < 8 && dstFile >= 0 && dstFile < 8) {
+                    Move newMove = new Move(file, rank, dstFile, dstRank);
+                    if (newMove.capturedPiece(b).getColor() != color) {
+                        moves.add(newMove);
+                    }
+                }
+            }
+        }
+        return moves;
     }
 
     public static List<Move> GetRookMoves(Board b, int rank, int file, PieceColor color) {
