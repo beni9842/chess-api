@@ -13,7 +13,7 @@ public class Game implements GameInterface {
     private final List<Observer> observers;
     private PieceColor turn;
     private int fullmove;
-    private final int halfmove;
+    private int halfmove;
     private Game(Board gameBoard, PieceColor currTurn, int halfmoveClock, int fullmoveCounter) {
         id = GameID.GetNewID();
         board = gameBoard;
@@ -92,13 +92,25 @@ public class Game implements GameInterface {
     public String postMove(String moveString) { // moveString in Universal Chess Interface
         for (Move legalMove : LegalMoves.GetAll(board, turn)) {
             if (legalMove.toUCI().equals(moveString)) {
+                Piece capturedPiece, movingPiece;
                 try {
+                    capturedPiece = legalMove.capturedPiece(board);
+                    movingPiece = legalMove.movingPiece(board);
                     legalMove.execute(board);
                 } catch (Exception e) {
                     return "Move unsuccessful";
                 }
                 Board moveResult = board.copy();
-                //broadcast(new MovePieceEvent(moveString, turn, moveResult));
+                if (movingPiece.getType() == PieceType.Pawn || !capturedPiece.equals(Pieces.NoPiece())) {
+                    halfmove = 0;
+                } else {
+                    halfmove++;
+                }
+                if (turn == PieceColor.Black) {
+                    fullmove++;
+                }
+                toggleTurn();
+                // broadcast(new MovePieceEvent(moveString, turn, moveResult));
                 return "Move successful";
             }
         }

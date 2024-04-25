@@ -1,6 +1,7 @@
 package chess.game;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public abstract class LegalMoves {
@@ -31,45 +32,235 @@ public abstract class LegalMoves {
         };
     }
 
-    private static List<Move> GetKingMoves(Board b, int rank, int file, PieceColor color) {
+    public static List<Move> GetKingMoves(Board b, int rank, int file, PieceColor color) {
+        List<Move> moves = new ArrayList<>();
+        Piece p = b.getPiece(rank, file);
+        if (p.getColor() == color) {
+            for (int i = -1; i <= 1; i++) {
+                for (int j = -1; j <= 1; j++) {
+                    int dstRank = rank + i;
+                    int dstFile = file + j;
+                    if (dstRank >= 0 && dstRank < 8 && dstFile >= 0 && dstFile < 8 && !(rank == dstRank && file == dstFile)) {
+                        Move newMove = new Move(file, rank, dstFile, dstRank);
+                        if (newMove.capturedPiece(b).getColor() != color) {
+                            moves.add(newMove);
+                        }
+                    }
+                }
+            }
+        }
+        return moves;
+    }
+
+    public static List<Move> GetQueenMoves(Board b, int rank, int file, PieceColor color) {
+        Piece p = b.getPiece(rank, file);
+        List<Move> moves = new ArrayList<>();
+        if (p.getColor() == color) {
+            moves = GetBishopMoves(b, rank, file, color);
+            moves.addAll(GetRookMoves(b, rank, file, color));
+        }
+        return moves;
+    }
+
+    public static List<Move> GetBishopMoves(Board b, int rank, int file, PieceColor color) {
+        Piece p = b.getPiece(rank, file);
+        List<Move> moves = new ArrayList<>();
+        if (p.getColor() == color) {
+            // get NW moves
+            int dstRank = rank - 1;
+            int dstFile = rank - 1;
+            while (dstRank >= 0 && dstFile >= 0) {
+                Move newMove = new Move(file, rank, dstFile, dstRank);
+                if (newMove.capturedPiece(b).equals(Pieces.NoPiece())) {
+                    moves.add(newMove);
+                } else if (newMove.capturedPiece(b).getColor() != color) {
+                    moves.add(newMove);
+                    break;
+                } else {
+                    break;
+                }
+                dstRank--;
+                dstFile--;
+            }
+            // get NE moves
+            dstRank = rank - 1;
+            dstFile = file + 1;
+            while (dstRank >= 0 && dstFile < 8) {
+                Move newMove = new Move(file, rank, dstFile, dstRank);
+                if (newMove.capturedPiece(b).equals(Pieces.NoPiece())) {
+                    moves.add(newMove);
+                } else if (newMove.capturedPiece(b).getColor() != color) {
+                    moves.add(newMove);
+                    break;
+                } else {
+                    break;
+                }
+                dstRank--;
+                dstFile++;
+            }
+            // get SE moves
+            dstRank = rank + 1;
+            dstFile = file + 1;
+            while (dstRank < 8 && dstFile < 8) {
+                Move newMove = new Move(file, rank, dstFile, dstRank);
+                if (newMove.capturedPiece(b).equals(Pieces.NoPiece())) {
+                    moves.add(newMove);
+                } else if (newMove.capturedPiece(b).getColor() != color) {
+                    moves.add(newMove);
+                    break;
+                } else {
+                    break;
+                }
+                dstRank++;
+                dstFile++;
+            }
+            // get SW moves
+            dstRank = rank + 1;
+            dstFile = file - 1;
+            while (dstRank < 8 && dstFile >= 0) {
+                Move newMove = new Move(file, rank, dstFile, dstRank);
+                if (newMove.capturedPiece(b).equals(Pieces.NoPiece())) {
+                    moves.add(newMove);
+                } else if (newMove.capturedPiece(b).getColor() != color) {
+                    moves.add(newMove);
+                    break;
+                } else {
+                    break;
+                }
+                dstRank++;
+                dstFile--;
+            }
+        }
+        return moves;
+    }
+
+    public static List<Move> GetKnightMoves(Board b, int rank, int file, PieceColor color) {
         /*
         TODO: implement
          */
         return new ArrayList<>();
     }
 
-    private static List<Move> GetQueenMoves(Board b, int rank, int file, PieceColor color) {
-        /*
-        TODO: implement
-         */
-        return new ArrayList<>();
+    public static List<Move> GetRookMoves(Board b, int rank, int file, PieceColor color) {
+        Piece p = b.getPiece(rank, file);
+        List<Move> moves = new ArrayList<>();
+        if (p.getColor() == color) {
+            // get N moves
+            int dstRank = rank-1;
+            int dstFile= file;
+            while (dstRank >= 0) {
+                Move newMove = new Move(file, rank, dstFile, dstRank);
+                if (newMove.capturedPiece(b).equals(Pieces.NoPiece())) {
+                    moves.add(newMove);
+                } else if (newMove.capturedPiece(b).getColor() != color) {
+                    moves.add(newMove);
+                    break;
+                } else {
+                    break;
+                }
+                dstRank--;
+            }
+            // get W moves
+            dstRank = rank;
+            dstFile = file-1;
+            while (dstFile >= 0) {
+                Move newMove = new Move(file, rank, dstFile, dstRank);
+                if (newMove.capturedPiece(b).equals(Pieces.NoPiece())) {
+                    moves.add(newMove);
+                } else if (newMove.capturedPiece(b).getColor() != color) {
+                    moves.add(newMove);
+                    break;
+                } else {
+                    break;
+                }
+                dstFile--;
+            }
+            // get S moves
+            dstRank = rank+1;
+            dstFile = file;
+            while (dstRank < 8) {
+                Move newMove = new Move(file, rank, dstFile, dstRank);
+                if (newMove.capturedPiece(b).equals(Pieces.NoPiece())) {
+                    moves.add(newMove);
+                } else if (newMove.capturedPiece(b).getColor() != color) {
+                    moves.add(newMove);
+                    break;
+                } else {
+                    break;
+                }
+                dstRank++;
+            }
+            // get E moves
+            dstRank = rank;
+            dstFile = file+1;
+            while (dstFile < 8) {
+                Move newMove = new Move(file, rank, dstFile, dstRank);
+                if (newMove.capturedPiece(b).equals(Pieces.NoPiece())) {
+                    moves.add(newMove);
+                } else if (newMove.capturedPiece(b).getColor() != color) {
+                    moves.add(newMove);
+                    break;
+                } else {
+                    break;
+                }
+                dstFile++;
+            }
+        }
+        return moves;
     }
 
-    private static List<Move> GetBishopMoves(Board b, int rank, int file, PieceColor color) {
-        /*
-        TODO: implement
-         */
-        return new ArrayList<>();
-    }
-
-    private static List<Move> GetKnightMoves(Board b, int rank, int file, PieceColor color) {
-        /*
-        TODO: implement
-         */
-        return new ArrayList<>();
-    }
-
-    private static List<Move> GetRookMoves(Board b, int rank, int file, PieceColor color) {
-        /*
-        TODO: implement
-         */
-        return new ArrayList<>();
-    }
-
-    private static List<Move> GetPawnMoves(Board b, int rank, int file, PieceColor color) {
-        /*
-        TODO: implement
-         */
-        return new ArrayList<>();
+    public static List<Move> GetPawnMoves(Board b, int rank, int file, PieceColor color) {
+        Piece p = b.getPiece(rank, file);
+        List<Move> moves = new ArrayList<>();
+        if (p.getColor() == color) {
+            if (color == PieceColor.Black) {
+                Move m1 = new Move(file, rank, file, rank+1);
+                if (m1.capturedPiece(b).equals(Pieces.NoPiece())) {
+                    moves.add(m1);
+                    if (rank == 1) {
+                        Move m2 = new Move(file, rank, file, rank+2);
+                        if (m2.capturedPiece(b).equals(Pieces.NoPiece())) {
+                            moves.add(m2);
+                        }
+                    }
+                }
+                if (file > 0) {
+                    Move attack1 = new Move(file, rank, file-1, rank+1);
+                    if (attack1.capturedPiece(b).getColor() == PieceColor.White) {
+                        moves.add(attack1);
+                    }
+                }
+                if (file < 7) {
+                    Move attack2 = new Move(file, rank, file+1, rank+1);
+                    if (attack2.capturedPiece(b).getColor() == PieceColor.White) {
+                        moves.add(attack2);
+                    }
+                }
+            } else { // Color is assumed to be white
+                Move m1 = new Move(file, rank, file, rank-1);
+                if (m1.capturedPiece(b).equals(Pieces.NoPiece())) {
+                    moves.add(m1);
+                    if (rank == 6) {
+                        Move m2 = new Move(file, rank, file, rank-2);
+                        if (m2.capturedPiece(b).equals(Pieces.NoPiece())) {
+                            moves.add(m2);
+                        }
+                    }
+                }
+                if (file > 0) {
+                    Move attack1 = new Move(file, rank, file-1, rank-1);
+                    if (attack1.capturedPiece(b).getColor() == PieceColor.White) {
+                        moves.add(attack1);
+                    }
+                }
+                if (file < 7) {
+                    Move attack2 = new Move(file, rank, file+1, rank-1);
+                    if (attack2.capturedPiece(b).getColor() == PieceColor.White) {
+                        moves.add(attack2);
+                    }
+                }
+            }
+        }
+        return moves;
     }
 }

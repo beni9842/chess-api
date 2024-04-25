@@ -6,6 +6,9 @@ import java.util.List;
 
 public class Move {
     private final List<Integer> moveVector;
+    public Move(int srcFile, int srcRank, int dstFile, int dstRank) {
+        moveVector = Arrays.asList(srcFile, srcRank, dstFile, dstRank);
+    }
     public Move(String uciString) {
         if (uciString.length() == 4) {
             moveVector = new ArrayList<>(Arrays.asList(
@@ -30,8 +33,11 @@ public class Move {
         );
     }
 
-    public Piece capture(Board target) {
+    public Piece capturedPiece(Board target) {
         return target.getPiece(moveVector.get(3), moveVector.get(2)).copy();
+    }
+    public Piece movingPiece(Board target) {
+        return target.getPiece(moveVector.get(1), moveVector.get(0)).copy();
     }
     public List<Integer> getMoveVector() {
         return moveVector;
