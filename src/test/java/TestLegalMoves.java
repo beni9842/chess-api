@@ -94,14 +94,14 @@ public class TestLegalMoves {
     @Test
     void testGetPawnMoves() {
         Board board = Board.NewBoard();
-        List<Move> moves = LegalMoves.GetPawnMoves(board, 1, 0, PieceColor.White);
+        List<Move> moves = LegalMoves.GetPawnMoves(board, 1, 0, PieceColor.Black);
         assertEquals(2, moves.size());
 
-        moves = LegalMoves.GetPawnMoves(board, 6, 0, PieceColor.Black);
+        moves = LegalMoves.GetPawnMoves(board, 6, 0, PieceColor.White);
         assertEquals(2, moves.size());
 
-        board.setPiece(Pieces.WhitePawn(), 3, 1);
-        moves = LegalMoves.GetPawnMoves(board, 1, 0, PieceColor.White);
+        board.setPiece(Pieces.WhitePawn(), 3, 4);
+        moves = LegalMoves.GetPawnMoves(board, 1, 4, PieceColor.Black);
         assertEquals(1, moves.size());
     }
 }

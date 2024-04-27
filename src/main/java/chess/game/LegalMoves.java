@@ -263,13 +263,13 @@ public abstract class LegalMoves {
                 }
                 if (file > 0) {
                     Move attack1 = new Move(file, rank, file-1, rank-1);
-                    if (attack1.capturedPiece(b).getColor() == PieceColor.White) {
+                    if (attack1.capturedPiece(b).getColor() == PieceColor.Black) {
                         moves.add(attack1);
                     }
                 }
                 if (file < 7) {
                     Move attack2 = new Move(file, rank, file+1, rank-1);
-                    if (attack2.capturedPiece(b).getColor() == PieceColor.White) {
+                    if (attack2.capturedPiece(b).getColor() == PieceColor.Black) {
                         moves.add(attack2);
                     }
                 }
