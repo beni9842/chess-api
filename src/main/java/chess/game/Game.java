@@ -11,7 +11,7 @@ public class Game implements GameInterface {
     private final int id;
     private final Board board;
     private final List<Observer> observers;
-    private PieceColor turn;
+    public PieceColor turn;
     private int fullmove;
     private int halfmove;
     private Game(Board gameBoard, PieceColor currTurn, int halfmoveClock, int fullmoveCounter) {
@@ -79,7 +79,7 @@ public class Game implements GameInterface {
                 + fullmove;
 
     }
-    void toggleTurn() {
+    public void toggleTurn() {
         if (turn == PieceColor.White) {
             turn = PieceColor.Black;
         } else if (turn == PieceColor.Black) {
