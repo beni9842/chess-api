@@ -3,6 +3,7 @@ package chess.game;
 public class Piece {
     private final PieceColor color;
     private final PieceType type;
+
     public Piece(PieceColor pieceColor, PieceType pieceType) {
         color = pieceColor;
         type = pieceType;
@@ -15,8 +16,9 @@ public class Piece {
     public PieceType getType() {
         return type;
     }
+
     public Piece copy() {
-        return new Piece(color, type);
+        return PieceFactory.createPiece(color, type);
     }
 
     @Override

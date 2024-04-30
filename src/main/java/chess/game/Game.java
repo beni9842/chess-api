@@ -14,31 +14,34 @@ public class Game implements GameInterface {
     public PieceColor turn;
     private int fullmove;
     private int halfmove;
-    private Game(Board gameBoard, PieceColor currTurn, int halfmoveClock, int fullmoveCounter) {
-        id = GameID.GetNewID();
-        board = gameBoard;
-        turn = currTurn;
-        fullmove = fullmoveCounter;
-        halfmove = halfmoveClock;
-        observers = new ArrayList<>();
+
+    private Game(GameBuilder builder) {
+        id = builder.id;
+        board = builder.board;
+        observers = builder.observers;
+        turn = builder.turn;
+        fullmove = builder.fullmove;
+        halfmove = builder.halfmove;
     }
 
     public static Game NewGame() {
-        Game g = new Game(Board.NewBoard(), PieceColor.White, 0, 1);
-        return g;
+        return new GameBuilder().build();
     }
+
     public String castleOptions() {
         /*
         TODO: implement
          */
         return "-";
     }
+
     public String enPassantTargets() {
         /*
         TODO: implement
          */
         return "-";
     }
+
     public String activeColor() {
         return switch (turn) {
             case White -> "w";
@@ -48,17 +51,10 @@ public class Game implements GameInterface {
     }
 
     public void attach(Observer newObserver) {
-        /*
-        attaches a new Observer
-        */
         observers.add(newObserver);
     }
 
-
     public void broadcast(Event e) {
-        /*
-        Broadcasts an event to the observers that are attached to the Game
-        */
         for (Observer o : observers) {
             o.update(e);
         }
@@ -77,8 +73,8 @@ public class Game implements GameInterface {
                 + enPassantTargets() + " "
                 + halfmove + " "
                 + fullmove;
-
     }
+
     public void toggleTurn() {
         if (turn == PieceColor.White) {
             turn = PieceColor.Black;
@@ -115,5 +111,38 @@ public class Game implements GameInterface {
             }
         }
         return "Illegal move";
+    }
+
+    public static class GameBuilder {
+        private int id;
+        private Board board;
+        private List<Observer> observers = new ArrayList<>();
+        private PieceColor turn;
+        private int fullmove;
+        private int halfmove;
+
+        public GameBuilder() {
+            id = GameID.GetNewID();
+            board = Board.NewBoard();
+            turn = PieceColor.White;
+            fullmove = 1;
+            halfmove = 0;
+        }
+
+        public GameBuilder withBoard(Board board) {
+            this.board = board;
+            return this;
+        }
+
+        public GameBuilder withTurn(PieceColor turn) {
+            this.turn = turn;
+            return this;
+        }
+
+        // Add other setter methods as needed
+
+        public Game build() {
+            return new Game(this);
+        }
     }
 }
