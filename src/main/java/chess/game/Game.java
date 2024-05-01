@@ -4,6 +4,8 @@ import chess.api.GameID;
 import chess.events.Event;
 import chess.events.MovePieceEvent;
 import chess.observers.Observer;
+import chess.observers.CheckObserver;
+import chess.observers.CheckmateObserver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +28,19 @@ public class Game implements GameInterface {
     }
 
     public static Game NewGame() {
-        return new GameBuilder().build();
+        // Create observers
+        CheckObserver checkObserver = new CheckObserver();
+        CheckmateObserver checkmateObserver = new CheckmateObserver();
+
+        // Add observers to the game
+        List<Observer> observers = new ArrayList<>();
+        observers.add(checkObserver);
+        observers.add(checkmateObserver);
+
+        // Create a new game instance with observers attached
+        return new GameBuilder()
+                .withObservers(observers)
+                .build();
     }
 
     public String castleOptions() {
@@ -49,10 +63,6 @@ public class Game implements GameInterface {
             case Black -> "b";
             default -> "-";
         };
-    }
-
-    public void attach(Observer newObserver) {
-        observers.add(newObserver);
     }
 
     public void broadcast(Event e) {
@@ -85,6 +95,7 @@ public class Game implements GameInterface {
             throw new RuntimeException("Illegal turn color encountered.");
         }
     }
+
     @Override
     public String postMove(String moveString) { // moveString in Universal Chess Interface
         for (Move legalMove : LegalMoves.GetAllLegalMoves(board, turn)) {
@@ -141,9 +152,13 @@ public class Game implements GameInterface {
             return this;
         }
 
-        // Add other setter methods as needed
         public GameBuilder withObservers(List<Observer> observers) {
-            this.observers = observers;
+            this.observers.addAll(observers);
+            return this;
+        }
+
+        public GameBuilder withObserver(Observer observer) {
+            this.observers.add(observer);
             return this;
         }
 
