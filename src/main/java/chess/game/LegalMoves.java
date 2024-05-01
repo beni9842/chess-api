@@ -1,9 +1,27 @@
 package chess.game;
 
+import chess.events.Event;
+import chess.events.MovePieceEvent;
+import chess.observers.CheckObserver;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class LegalMoves {
+    public static List<Move> GetAllLegalMoves(Board b, PieceColor turn) {
+        List<Move> moveList = GetAll(b, turn);
+        CheckObserver checkObserver = new CheckObserver();
+        for (Move m : moveList) {
+            Board copy = b.copy();
+            m.execute(copy);
+            Event moveEvent = new MovePieceEvent(m.toUCI(), turn, copy);
+            checkObserver.update(moveEvent);
+            if (checkObserver.inCheck() == turn) {
+                moveList.remove(m);
+            }
+        }
+        return moveList;
+    }
     public static List<Move> GetAll(Board b, PieceColor turn) {
         List<Move> moveList = new ArrayList<>();
         for (int i = 0; i < 8; i++) {

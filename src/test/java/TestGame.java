@@ -70,7 +70,7 @@ public class TestGame {
     void testPostMove() {
         Game game = Game.NewGame();
         String result = game.postMove("e2e4");
-        assertEquals("Move successful", result);
+        assertEquals("White made move: e2e4", result);
 
     }
 }

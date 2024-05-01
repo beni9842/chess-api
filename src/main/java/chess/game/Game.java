@@ -2,6 +2,7 @@ package chess.game;
 
 import chess.api.GameID;
 import chess.events.Event;
+import chess.events.MovePieceEvent;
 import chess.observers.Observer;
 
 import java.util.ArrayList;
@@ -86,7 +87,7 @@ public class Game implements GameInterface {
     }
     @Override
     public String postMove(String moveString) { // moveString in Universal Chess Interface
-        for (Move legalMove : LegalMoves.GetAll(board, turn)) {
+        for (Move legalMove : LegalMoves.GetAllLegalMoves(board, turn)) {
             if (legalMove.toUCI().equals(moveString)) {
                 Piece capturedPiece, movingPiece;
                 try {
@@ -105,9 +106,10 @@ public class Game implements GameInterface {
                 if (turn == PieceColor.Black) {
                     fullmove++;
                 }
+                Event moveEvent = new MovePieceEvent(moveString, turn, moveResult);
                 toggleTurn();
-                // broadcast(new MovePieceEvent(moveString, turn, moveResult));
-                return "Move successful";
+                broadcast(moveEvent);
+                return moveEvent.getMessage();
             }
         }
         return "Illegal move";
@@ -140,6 +142,10 @@ public class Game implements GameInterface {
         }
 
         // Add other setter methods as needed
+        public GameBuilder withObservers(List<Observer> observers) {
+            this.observers = observers;
+            return this;
+        }
 
         public Game build() {
             return new Game(this);
