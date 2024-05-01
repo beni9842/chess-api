@@ -9,18 +9,19 @@ import java.util.List;
 
 public abstract class LegalMoves {
     public static List<Move> GetAllLegalMoves(Board b, PieceColor turn) {
-        List<Move> moveList = GetAll(b, turn);
+        List<Move> allMoves = GetAll(b, turn);
+        List<Move> legalMoves = new ArrayList<>();
         CheckObserver checkObserver = new CheckObserver();
-        for (Move m : moveList) {
+        for (Move m : allMoves) {
             Board copy = b.copy();
             m.execute(copy);
             Event moveEvent = new MovePieceEvent(m.toUCI(), turn, copy);
             checkObserver.update(moveEvent);
-            if (checkObserver.inCheck() == turn) {
-                moveList.remove(m);
+            if (checkObserver.inCheck() != turn) {
+                legalMoves.add(m);
             }
         }
-        return moveList;
+        return legalMoves;
     }
     public static List<Move> GetAll(Board b, PieceColor turn) {
         List<Move> moveList = new ArrayList<>();

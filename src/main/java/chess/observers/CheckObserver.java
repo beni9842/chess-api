@@ -23,8 +23,8 @@ public class CheckObserver implements Observer {
         moveResult = b;
     }
     public PieceColor inCheck() {
-        List<Move> WhiteMoves = LegalMoves.GetAllLegalMoves(moveResult, PieceColor.White);
-        List<Move> BlackMoves = LegalMoves.GetAllLegalMoves(moveResult, PieceColor.Black);
+        List<Move> WhiteMoves = LegalMoves.GetAll(moveResult, PieceColor.White);
+        List<Move> BlackMoves = LegalMoves.GetAll(moveResult, PieceColor.Black);
         for (Move move : WhiteMoves) {
             Piece capturedPiece = move.capturedPiece(moveResult);
             if (capturedPiece.equals(Pieces.BlackKing())) {

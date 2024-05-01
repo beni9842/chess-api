@@ -17,6 +17,8 @@ public class Game implements GameInterface {
     public PieceColor turn;
     private int fullmove;
     private int halfmove;
+    private static CheckObserver checkObserver;
+    private static CheckmateObserver checkmateObserver;
 
     private Game(GameBuilder builder) {
         id = builder.id;
@@ -29,14 +31,13 @@ public class Game implements GameInterface {
 
     public static Game NewGame() {
         // Create observers
-        CheckObserver checkObserver = new CheckObserver();
-        CheckmateObserver checkmateObserver = new CheckmateObserver();
+        checkObserver = new CheckObserver();
+        checkmateObserver = new CheckmateObserver();
 
         // Add observers to the game
         List<Observer> observers = new ArrayList<>();
         observers.add(checkObserver);
         observers.add(checkmateObserver);
-
         // Create a new game instance with observers attached
         return new GameBuilder()
                 .withObservers(observers)
@@ -120,7 +121,17 @@ public class Game implements GameInterface {
                 Event moveEvent = new MovePieceEvent(moveString, turn, moveResult);
                 toggleTurn();
                 broadcast(moveEvent);
-                return moveEvent.getMessage();
+                PieceColor inCheck = checkObserver.inCheck();
+                PieceColor inCheckmate = checkmateObserver.inCheckmate();
+                if (inCheckmate == PieceColor.NoColor && inCheck == PieceColor.NoColor) {
+                    return moveEvent.getMessage();
+                } else if (inCheckmate == turn) {
+                    return moveEvent.getMessage() + "\n" + PieceColor.negate(turn) + " wins!";
+                } else if (inCheck == turn) {
+                    return moveEvent.getMessage() + "\n" + turn + " is in check!";
+                } else {
+                    return "Unknown error";
+                }
             }
         }
         return "Illegal move";
