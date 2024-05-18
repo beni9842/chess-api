@@ -1,4 +1,4 @@
-package chess.game;
+package chess.pieces;
 
 public enum PieceType {
     Pawn, Rook, Knight, Bishop, Queen, King, NoType
