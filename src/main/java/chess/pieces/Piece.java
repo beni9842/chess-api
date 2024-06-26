@@ -1,9 +1,10 @@
 package chess.pieces;
 
 import chess.game.Board;
-import chess.game.Move;
+import chess.moves.Move;
 
 import java.util.List;
+import java.util.Objects;
 
 public abstract class Piece {
     private PieceColor color;
@@ -16,14 +17,16 @@ public abstract class Piece {
     @Override
     public boolean equals(Object o) {
         if (o instanceof Piece) {
-            Piece otherPiece = (Piece) o;
-            return otherPiece.getType() == this.getType() && otherPiece.getColor() == this.getColor();
+            return Objects.equals(this.toString(), o.toString());
         } else {
             return false;
         }
     }
     public abstract PieceType getType();
+    public abstract Piece copy();
     public abstract List<Move> getMoves(Board target, int file, int rank);
+    public abstract int getValue();
     @Override
     public abstract String toString();
+    public abstract String toSAN();
 }
