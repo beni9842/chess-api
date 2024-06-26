@@ -11,29 +11,40 @@ import java.util.Objects;
 
 @RestController
 @RequestMapping("/chess")
+@CrossOrigin(origins = "http://localhost:3000")
 public class GameController {
 
     @PostMapping("/new")
     public ResponseEntity<String> newGame() {
         GameInterface newGame = GamePool.NewGame();
-        return ResponseEntity.ok("Created new GameInterface with id=" + newGame.getID());
+        String response = "Created new GameInterface with id=" + newGame.getID();
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/fen/{gameID}")
     public ResponseEntity<String> getFEN(@PathVariable Integer gameID) {
-        return ResponseEntity.ok(GamePool.GetFEN(gameID));
+        System.out.println("Getting fen for game " + gameID);
+        String response = GamePool.GetFEN(gameID);
+        System.out.println(response);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping(value = "/move/{gameID}", consumes = {"text/plain"})
     public ResponseEntity<String> postMove(@PathVariable Integer gameID, @PathParam("notation") String notation, @RequestBody String moveString) {
-        System.out.println(notation);
-        System.out.println(moveString);
+        System.out.println("Received move: " + moveString);
+        String response = "";
         if (Objects.equals(notation, "uci")) {
-            return ResponseEntity.ok(GamePool.PostMoveUCI(gameID, moveString));
+            response = GamePool.PostMoveUCI(gameID, moveString);
+            System.out.println(response);
+            return ResponseEntity.ok(response);
         } else if (Objects.equals(notation, "san")) {
-            return ResponseEntity.ok(GamePool.PostMoveSAN(gameID, moveString));
+            response = GamePool.PostMoveSAN(gameID, moveString);
+            System.out.println(response);
+            return ResponseEntity.ok(response);
         } else {
-            return ResponseEntity.ok("Unknown notation type");
+            response = "Unknown notation type";
+            System.out.println(response);
+            return ResponseEntity.ok(response);
         }
     }
 }
