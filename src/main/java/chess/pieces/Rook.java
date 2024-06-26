@@ -22,7 +22,7 @@ public class Rook extends Piece {
     }
 
     @Override
-    public List<Move> getMoves(Board target, int file, int rank) {
+    public List<Move> getMoves(Board target, int file, int rank, String epString, String castleString) {
         List<Move> moves = new ArrayList<>();
         PieceColor color = getColor();
         // get N moves

@@ -18,10 +18,10 @@ public class PawnDouble extends Move {
         int targetFile = moveVector.get(2);
         int targetRank;
         if (color == PieceColor.White) {
-            targetRank = moveVector.get(3) - 1;
+            targetRank = moveVector.get(3) + 1;
         } else {
             // color assumed to be black
-            targetRank = moveVector.get(3) + 1;
+            targetRank = moveVector.get(3) - 1;
         }
         return Board.FileString(targetFile) + Board.RankString(targetRank);
     }

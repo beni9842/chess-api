@@ -10,11 +10,11 @@ import java.util.List;
 import java.util.Objects;
 
 public class Move {
-    private final int srcFile;
-    private final int srcRank;
-    private final int dstFile;
-    private final int dstRank;
-    private final Board target;
+    protected final int srcFile;
+    protected final int srcRank;
+    protected final int dstFile;
+    protected final int dstRank;
+    protected final Board target;
     private final Piece movingPiece;
     public Move(int sf, int sr, int df, int dr, Board initialBoard) {
         srcFile = sf;
@@ -38,10 +38,10 @@ public class Move {
         return otherColor;
     }
     public boolean check() {
-        return GameObserver.InCheck(otherColor(), execute());
+        return GameObserver.InCheck(otherColor(), execute(), "-", "-");
     }
     public boolean checkmate() {
-        return GameObserver.InCheck(otherColor(), execute());
+        return GameObserver.InCheckmate(otherColor(), execute(), "-", "-");
     }
     public String toUCI() {
         return Board.FileString(srcFile) + Board.RankString(srcRank) + Board.FileString(dstFile) + Board.RankString(dstRank);
@@ -50,12 +50,14 @@ public class Move {
         StringBuilder san = new StringBuilder();
         Piece movingPiece = getMovingPiece();
         san.append(movingPiece.toSAN());
-        List<Move> legalMoves = LegalMoves.GetLegalMoves(target, moverColor());
+        List<Move> legalMoves = LegalMoves.GetLegalMoves(target, moverColor(), "-", "-");
         for (Move m : legalMoves) {
-            if (m.getMoveVector().subList(2,4) == getMoveVector().subList(2,4) && m.getMovingPiece().getType() == getMovingPiece().getType()) {
-                if (m.getMoveVector().get(0) == getMoveVector().get(0)) {
+            if (m.dstFile == dstFile && m.dstRank == dstRank && !m.equals(this) && m.getMovingPiece().getType() == getMovingPiece().getType()) {
+                if (m.srcFile == srcFile) { // on same file
+                    // add rank to move
                     san.append(Board.RankString(srcRank));
-                } else {
+                } else { // on same rank or not on same rank or file
+                    // add file to move
                     san.append(Board.FileString(srcFile));
                 }
             }
@@ -81,8 +83,6 @@ public class Move {
         return target.getPiece(srcFile, srcRank).copy();
     }
     public Board execute() {
-        Piece movingPiece = getMovingPiece();
-        Piece capturedPiece = getCapturedPiece();
         Board result = target.copy();
         result.movePiece(srcFile, srcRank, dstFile, dstRank);
         return result;
@@ -95,5 +95,17 @@ public class Move {
     @Override
     public String toString() {
         return toSAN();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof Move) {
+            Move otherMove = (Move) other;
+            return srcFile == otherMove.srcFile &&
+                    srcRank == otherMove.srcRank &&
+                    dstFile == otherMove.dstFile &&
+                    dstRank == otherMove.dstRank;
+        }
+        return false;
     }
 }

@@ -40,9 +40,13 @@ public class Game implements GameInterface {
     public static Game BuildFromMoveRecord(List<Move> moves) {
         Game g = NewGame();
         for (Move m : moves) {
-            // TODO
+            g.executeMove(m);
         }
         return g;
+    }
+    public static Game BuildFromFEN(String fenString) {
+        //TODO
+        return null;
     }
     public void toggleActiveColor() {
         if (activeColor == PieceColor.White) {
@@ -143,20 +147,19 @@ public class Game implements GameInterface {
             halfmoveCounter += 1;
         }
         // if the current color has no available moves, they are in checkmate
-        boolean checkmate = GameObserver.InCheckmate(activeColor, board);
+        boolean checkmate = GameObserver.InCheckmate(activeColor, board, enPassantString(), castleString());
         if (checkmate) {
             toggleActiveColor();
             message.append("\nCheckmate! ").append(activeColor).append(" wins!");
-            // set active color to no color so no future moves can be made
-            activeColor = PieceColor.NoColor;
-        } else if (GameObserver.InCheck(activeColor, board)) {
+            toggleActiveColor();
+        } else if (GameObserver.InCheck(activeColor, board, enPassantString(), castleString())) {
             message.append("\nCheck!");
         }
         return message.toString();
     }
     @Override
     public String postMoveUCI(String uciString) {
-        List<Move> legalMoves = LegalMoves.GetLegalMoves(board, activeColor);
+        List<Move> legalMoves = LegalMoves.GetLegalMoves(board, activeColor, enPassantString(), castleString());
         for (Move legalMove : legalMoves) {
             if (legalMove.toUCI().equals(uciString)) {
                 return executeMove(legalMove);
@@ -167,7 +170,7 @@ public class Game implements GameInterface {
 
     @Override
     public String postMoveSAN(String sanString) {
-        List<Move> legalMoves = LegalMoves.GetLegalMoves(board, activeColor);
+        List<Move> legalMoves = LegalMoves.GetLegalMoves(board, activeColor, enPassantString(), castleString());
         for (Move legalMove : legalMoves) {
             if (legalMove.toSAN().equals(sanString)) {
                 return executeMove(legalMove);

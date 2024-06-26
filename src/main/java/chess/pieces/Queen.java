@@ -22,13 +22,13 @@ public class Queen extends Piece {
     }
 
     @Override
-    public List<Move> getMoves(Board target, int file, int rank) {
+    public List<Move> getMoves(Board target, int file, int rank, String epString, String castleString) {
         PieceColor color = getColor();
         Piece bishop = new Bishop(color);
         Piece rook = new Rook(color);
         List<Move> moves = new ArrayList<>();
-        moves.addAll(bishop.getMoves(target, file, rank));
-        moves.addAll(rook.getMoves(target, file, rank));
+        moves.addAll(bishop.getMoves(target, file, rank, epString, castleString));
+        moves.addAll(rook.getMoves(target, file, rank, epString, castleString));
         return moves;
     }
 

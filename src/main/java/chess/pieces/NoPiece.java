@@ -22,7 +22,7 @@ public class NoPiece extends Piece {
     }
 
     @Override
-    public List<Move> getMoves(Board target, int file, int rank) {
+    public List<Move> getMoves(Board target, int file, int rank, String epString, String castleString) {
         return List.of();
     }
 

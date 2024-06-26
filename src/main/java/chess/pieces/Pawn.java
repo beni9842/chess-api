@@ -1,6 +1,7 @@
 package chess.pieces;
 
 import chess.game.Board;
+import chess.moves.EnPassant;
 import chess.moves.Move;
 import chess.moves.PawnDouble;
 
@@ -23,7 +24,7 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public List<Move> getMoves(Board target, int file, int rank) {
+    public List<Move> getMoves(Board target, int file, int rank, String epString, String castleString) {
         List<Move> moves = new ArrayList<>();
         PieceColor color = getColor();
         if (color == PieceColor.Black) {
@@ -42,11 +43,19 @@ public class Pawn extends Piece {
                 if (attack1.getCapturedPiece().getColor() == PieceColor.White) {
                     moves.add(attack1);
                 }
+                String attack1Dst = Board.FileString(file-1) + Board.RankString(rank+1);
+                if (attack1Dst.equals(epString)) {
+                    moves.add(new EnPassant(file, rank, file-1, rank+1, target));
+                }
             }
             if (file < 7) {
                 Move attack2 = new Move(file, rank, file+1, rank+1, target);
                 if (attack2.getCapturedPiece().getColor() == PieceColor.White) {
                     moves.add(attack2);
+                }
+                String attack2Dst = Board.FileString(file+1) + Board.RankString(rank+1);
+                if (attack2Dst.equals(epString)) {
+                    moves.add(new EnPassant(file, rank, file+1, rank+1, target));
                 }
             }
         } else { // Color is assumed to be white
@@ -65,11 +74,19 @@ public class Pawn extends Piece {
                 if (attack1.getCapturedPiece().getColor() == PieceColor.Black) {
                     moves.add(attack1);
                 }
+                String attack1Dst = Board.FileString(file-1) + Board.RankString(rank-1);
+                if (attack1Dst.equals(epString)) {
+                    moves.add(new EnPassant(file, rank, file-1, rank-1, target));
+                }
             }
             if (file < 7) {
                 Move attack2 = new Move(file, rank, file+1, rank-1, target);
                 if (attack2.getCapturedPiece().getColor() == PieceColor.Black) {
                     moves.add(attack2);
+                }
+                String attack2Dst = Board.FileString(file+1) + Board.RankString(rank-1);
+                if (attack2Dst.equals(epString)) {
+                    moves.add(new EnPassant(file, rank, file+1, rank-1, target));
                 }
             }
         }
