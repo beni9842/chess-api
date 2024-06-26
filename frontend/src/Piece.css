@@ -1,0 +1,6 @@
+
+.piece {
+    width: 85%;
+    height: 85%;
+    object-fit: contain; /* Ensures the image fits within the square */
+  }
