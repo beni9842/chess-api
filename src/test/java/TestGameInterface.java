@@ -80,4 +80,38 @@ public class TestGameInterface {
         assertEquals("White made move exd6", gi.postMoveSAN("exd6"));
         assertEquals("rnbqkbnr/ppp2ppp/3Pp3/8/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 3", gi.getFEN());
     }
+
+    @Test
+    void testBuggyGame() {
+        /*
+        1. e4 d5
+        2. exd5 Qxd5
+        3. Nc3 Qe5+
+        4. Be2 Bg4
+        5. f3 Bxf3
+        6. gxf3 Nf6
+        7. d4 Qd6
+        8. Nb5 Qe6
+        9. Nc7+ <- here
+         */
+        GameInterface gi = GameInterface.NewGameInterface();
+        gi.postMoveSAN("e4");
+        gi.postMoveSAN("d5");
+        gi.postMoveSAN("exd5");
+        gi.postMoveSAN("Qxd5");
+        gi.postMoveSAN("Nc3");
+        gi.postMoveSAN("Qe5+");
+        gi.postMoveSAN("Be2");
+        gi.postMoveSAN("Bg4");
+        gi.postMoveSAN("f3");
+        gi.postMoveSAN("Bcf3");
+        gi.postMoveSAN("gxf3");
+        gi.postMoveSAN("Nf6");
+        gi.postMoveSAN("d4");
+        gi.postMoveSAN("Qd6");
+        gi.postMoveSAN("Nb5");
+        gi.postMoveSAN("Qe6");
+        assertEquals("White made move Nc7+", gi.postMoveSAN("Nc7+"));
+    }
+
 }

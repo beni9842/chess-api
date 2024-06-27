@@ -9,7 +9,7 @@ public interface GameInterface {
     String postMoveUCI(String uciString);
     String postMoveSAN(String sanString);
     int getID();
-
+    String getMoveRecord();
     static GameInterface NewGameInterface() {
         return Game.NewGame();
     }

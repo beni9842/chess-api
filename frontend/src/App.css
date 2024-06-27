@@ -19,13 +19,28 @@
     align-items: center;
   }
   
-  .flip-button {
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    margin-bottom: 10px; /* Space between buttons if there are multiple */
-  }
+.flip-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  margin-bottom: 10px; /* Space between buttons if there are multiple */
+}
+
+  
+.move-record-container {
+  width: 200px; /* Adjust width as needed */
+  padding: 10px;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  overflow-y: auto; /* Enable vertical scrolling */
+  max-height: 300px; /* Limit height and enable scrolling */
+}
+
+.move-record {
+  font-size: 14px;
+  line-height: 1.5;
+}

@@ -45,4 +45,12 @@ public abstract class GamePool {
             return e.getMessage();
         }
     }
+
+    public static String GetMoveRecord(int id) {
+        try {
+            return GetGame(id).getMoveRecord();
+        } catch (RuntimeException e) {
+            return e.getMessage();
+        }
+    }
 }

@@ -47,4 +47,12 @@ public class GameController {
             return ResponseEntity.ok(response);
         }
     }
+
+    @GetMapping("/move-record/{gameID}")
+    public ResponseEntity<String> getMoveRecord(@PathVariable Integer gameID) {
+        System.out.println("Getting move-record for game " + gameID);
+        String response = GamePool.GetMoveRecord(gameID);
+        System.out.println(response);
+        return ResponseEntity.ok(response);
+    }
 }

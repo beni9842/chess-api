@@ -10,6 +10,7 @@ const App = () => {
   const [gameID, setGameID] = useState(-1);
   const [move, setMove] = useState('');
   const [responseMessage, setResponseMessage] = useState('');
+  const [moveRecord, setMoveRecord] = useState(''); // New state for move record
 
   useEffect(() => {
     const createNewGame = async () => {
@@ -29,6 +30,17 @@ const App = () => {
 
   const handleMoveChange = (event) => {
     setMove(event.target.value);
+  };
+
+  const fetchMoveRecord = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8080/chess/move-record/${gameID}`);
+      console.log('Move Record Response:', response.data); // Log response
+      setMoveRecord(response.data);
+    } catch (error) {
+      console.error("Error fetching move record:", error);
+      console.log("Error details:", error.response || error.message); // Log error details
+    }
   };
 
   const handleMoveSubmit = async () => {
@@ -54,6 +66,9 @@ const App = () => {
       console.error("Error getting board state:", error);
       setResponseMessage("Error getting board state:", error);
     }
+    
+   await fetchMoveRecord(gameID);
+    
   };
 
   const handleFlip = () => {
@@ -77,6 +92,9 @@ const App = () => {
         />
         <button onClick={handleMoveSubmit}>Submit Move</button>
         {responseMessage && <div className="response-message">{responseMessage}</div>}
+      </div>
+      <div className="move-record-container">
+        <div className="move-record" dangerouslySetInnerHTML={{ __html: moveRecord }}/>
       </div>
     </div>
   );
