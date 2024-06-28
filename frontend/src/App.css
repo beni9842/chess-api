@@ -1,46 +1,92 @@
 
 .App {
     display: flex;
-    justify-content: center;
+    justify-content: left;
     align-items: center;
     height: 100vh;
     background-color: beige; /* Optional: Add a background color */
+    padding: 10vh;
   }
+
+.response-message {
+    width: 30vh;
+    text-align: center;
+}
 
   .chessboard-container {
     flex: 0 0 auto; /* Prevent the chessboard container from growing */
+      position: fixed;
   }
 
+  .move-input {
+      width: 100px;
+  }
 
 .sidebar {
-    margin-left: 20px; /* Space between chessboard and sidebar */
+    margin-left: 5vh; /* Space between chessboard and sidebar */
+    margin-right: 5vh;
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 1vh;
   }
   
 .flip-button {
-  padding: 10px 20px;
+  padding: 10px 15px;
   font-size: 16px;
   cursor: pointer;
   background-color: #4CAF50;
   color: white;
   border: none;
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    border: 1px solid green;
   border-radius: 4px;
-  margin-bottom: 10px; /* Space between buttons if there are multiple */
+    box-shadow: 2px 2px #cbcbae;
 }
 
   
 .move-record-container {
-  width: 200px; /* Adjust width as needed */
-  padding: 10px;
+    padding: 5px;
+  width: 150px; /* Adjust width as needed */
+    min-width: 120px;
   background-color: #f0f0f0;
   border: 1px solid #ccc;
   overflow-y: auto; /* Enable vertical scrolling */
-  max-height: 300px; /* Limit height and enable scrolling */
+  height: 200px; /* Limit height and enable scrolling */
+}
+
+.move-record-header {
+    font-size: 20px;
+    text-align: center;
+    text-decoration: underline;
 }
 
 .move-record {
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.5;
+    padding: 1vh;
 }
+
+.response-message-container {
+    height: 50px; /* Set a fixed height */
+    width: 200px;
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+
+.move-record-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.move-record-table tr {
+    background-color: rgba(166, 166, 166, 0.38);
+}
+
+.move-record-table tr:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0);
+}
+

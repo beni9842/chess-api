@@ -1,32 +1,58 @@
-import Board from "./Board";
-import "./App.css"
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import Modal from 'react-modal';
+import api from "./services/api";
+import Board from "./Board";
+import "./App.css";
 
 const initialFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+
+Modal.setAppElement('#root');
+
 const App = () => {
   const [isFlipped, setIsFlipped] = useState(false);
   const [fen, setFEN] = useState(initialFEN);
   const [gameID, setGameID] = useState(-1);
   const [move, setMove] = useState('');
   const [responseMessage, setResponseMessage] = useState('');
-  const [moveRecord, setMoveRecord] = useState(''); // New state for move record
+  const [moveRecord, setMoveRecord] = useState([]);
+  const [modalIsOpen, setModalIsOpen] = useState(true);
+  const [playerColor, setPlayerColor] = useState('white');
 
-  useEffect(() => {
-    const createNewGame = async () => {
-      try {
-        const response = await axios.post('http://localhost:8080/chess/new');
-        const id = response.data.split('=')[1];
-        setGameID(id);
-        setResponseMessage(response.data);
-      } catch (error) {
-        console.error("Error creating new game:", error);
-        setResponseMessage("Error creating new game:", error);
+  const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+  const createNewGame = async (color) => {
+    try {
+      console.log(`Creating new game as ${color}`);
+      const response = await api.post('/new', {
+        playerColor: color === 'black' ? 'black' : 'white'
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      console.log('Response from createNewGame:', response);
+      const id = response.data.gameID;
+      setGameID(id);
+      setPlayerColor(color);
+      if (color === 'black') {
+        setIsFlipped(true);
+        const botResponse = await api.post(`/bot-move/${id}`, {
+          botColor: "white"
+        }, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        const fenResponse = await api.get(`/fen/${id}`);
+        setFEN(fenResponse.data.fen);
+        setResponseMessage(botResponse.data.message)
       }
-    };
-
-    createNewGame();
-  }, []);
+      setModalIsOpen(false);
+    } catch (error) {
+      const responseMessage = "Error creating new game: " + error.response.data.message;
+      console.error(responseMessage);
+      setResponseMessage(responseMessage);
+    }
+  };
 
   const handleMoveChange = (event) => {
     setMove(event.target.value);
@@ -34,41 +60,59 @@ const App = () => {
 
   const fetchMoveRecord = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/chess/move-record/${gameID}`);
-      console.log('Move Record Response:', response.data); // Log response
-      setMoveRecord(response.data);
+      const response = await api.get(`/move-record/${gameID}`);
+      setMoveRecord(response.data.moveList);
     } catch (error) {
-      console.error("Error fetching move record:", error);
-      console.log("Error details:", error.response || error.message); // Log error details
+      console.error("Error fetching move record:", error.details);
     }
   };
 
   const handleMoveSubmit = async () => {
     try {
-      console.log('Submitting move:', move); // Log move
-      const response = await axios.post(`http://localhost:8080/chess/move/${gameID}?notation=san`, move, {
+      const response = await api.post(`/move/${gameID}`, {
+        'notation': 'san',
+        'moveString': move
+      }, {
         headers: {
-          'Content-Type': 'text/plain',
-        }
+          'Content-Type': 'application/json',
+        },
       });
-      console.log('Move Response:', response.data); // Log response
-      setResponseMessage(response.data);
-    } catch (error) {
-      console.error("Error posting move:", error);
-      setResponseMessage("Error posting move:", error);
-    }
+      setResponseMessage(response.data.message);
+      setMove('');
 
-    try {
-      const fenResponse = await axios.get(`http://localhost:8080/chess/fen/${gameID}`);
-      console.log('FEN Response:', fenResponse.data); // Log response
-      setFEN(fenResponse.data);
+      // Get the new game state
+      const fenResponse = await api.get(`/fen/${gameID}`);
+      setFEN(fenResponse.data.fen);
+      await fetchMoveRecord();
+      await delay(1000);
+      if (response.data.message != "Error: illegal move") {
+        const botResponse = await api.post(`/bot-move/${gameID}`, {
+          botColor: playerColor === "white" ? "black" : "white"
+        }, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        const fenResponse2 = await api.get(`/fen/${gameID}`);
+        setFEN(fenResponse2.data.fen);
+        await fetchMoveRecord();
+        setResponseMessage(botResponse.data.message)
+      }
     } catch (error) {
-      console.error("Error getting board state:", error);
-      setResponseMessage("Error getting board state:", error);
+      setResponseMessage("Error posting move");
     }
-    
-   await fetchMoveRecord(gameID);
-    
+  };
+
+  const formatMoveRecord = (moves) => {
+    const rows = [];
+    for (let i = 0; i < moves.length; i += 2) {
+      rows.push({
+        moveNumber: Math.floor(i / 2) + 1 + ".",
+        whiteMove: moves[i],
+        blackMove: moves[i + 1] || "..."
+      });
+    }
+    return rows;
   };
 
   const handleFlip = () => {
@@ -76,27 +120,50 @@ const App = () => {
   };
 
   return (
-    <div className="App">
-      <div className="board-container">
-        <Board fen={fen} isFlipped={isFlipped} />
+      <div className="App">
+        <Modal isOpen={modalIsOpen} onRequestClose={() => setModalIsOpen(false)}>
+          <h2>Select Your Color</h2>
+          <button onClick={() => createNewGame('white')}>White</button>
+          <button onClick={() => createNewGame('black')}>Black</button>
+        </Modal>
+        <div className="sidebar">
+          <button className="new-game-button" onClick={() => setModalIsOpen(true)}>
+            New Game
+          </button>
+        </div>
+        <div className="board-container">
+          <Board fen={fen} isFlipped={isFlipped} />
+        </div>
+        <div className="sidebar">
+          <button className="flip-button" onClick={handleFlip}>
+            Flip
+          </button>
+          <input className="move-input"
+                 type="text"
+                 value={move}
+                 onChange={handleMoveChange}
+                 placeholder="Enter move"
+          />
+          <button onClick={handleMoveSubmit}>Submit Move</button>
+          <div className="response-message-container">
+            {responseMessage && <div className="response-message">{responseMessage}</div>}
+          </div>
+        </div>
+        <div className="move-record-container">
+          <header className="move-record-header">Moves</header>
+          <table className="move-record-table">
+            <tbody>
+            {formatMoveRecord(moveRecord).map((row, index) => (
+                <tr key={index}>
+                  <td>{row.moveNumber}</td>
+                  <td>{row.whiteMove}</td>
+                  <td>{row.blackMove}</td>
+                </tr>
+            ))}
+            </tbody>
+          </table>
+        </div>
       </div>
-      <div className="sidebar">
-        <button className="flip-button" onClick={handleFlip}>
-          flip
-        </button>
-        <input 
-          type="text" 
-          value={move} 
-          onChange={handleMoveChange} 
-          placeholder="Enter move in SAN" 
-        />
-        <button onClick={handleMoveSubmit}>Submit Move</button>
-        {responseMessage && <div className="response-message">{responseMessage}</div>}
-      </div>
-      <div className="move-record-container">
-        <div className="move-record" dangerouslySetInnerHTML={{ __html: moveRecord }}/>
-      </div>
-    </div>
   );
 }
 

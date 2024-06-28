@@ -150,10 +150,10 @@ public class Game implements GameInterface {
         boolean checkmate = GameObserver.InCheckmate(activeColor, board, enPassantString(), castleString());
         if (checkmate) {
             toggleActiveColor();
-            message.append("\nCheckmate! ").append(activeColor).append(" wins!");
+            message.append("<br> Checkmate! ").append(activeColor).append(" wins!");
             toggleActiveColor();
         } else if (GameObserver.InCheck(activeColor, board, enPassantString(), castleString())) {
-            message.append("\nCheck!");
+            message.append("<br> Check!");
         }
         return message.toString();
     }
@@ -187,7 +187,7 @@ public class Game implements GameInterface {
     @Override
     public String getMoveRecord() {
         StringBuilder moves = new StringBuilder();
-        moves.append("1. ");
+        moves.append("<p>1. ");
         int counter = 0;
         for (Move m : moveRecord) {
             moves.append(m.toSAN());
@@ -195,9 +195,10 @@ public class Game implements GameInterface {
             if (counter % 2 == 0) {
                 moves.append("<br>").append(counter / 2 + 1).append(". ");
             } else {
-                moves.append("    ");
+                moves.append("&emsp;");
             }
         }
+        moves.append("</p>");
         return moves.toString();
     }
 }

@@ -1,2 +1,2 @@
-rootProject.name = "ChessAPI"
+rootProject.name = "backend"
 
